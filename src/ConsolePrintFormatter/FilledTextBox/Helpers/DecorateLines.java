@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DecorateLines {
-    private String reset = (char) 27 + "[m";
+    private String reset = "\033[m";
 
     private String formatLine(String str, String csiCode){
         return  csiCode + str + reset;
