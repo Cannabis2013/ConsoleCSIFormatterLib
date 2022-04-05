@@ -1,8 +1,9 @@
 package ConsolePrintFormatter.FilledTextBox;
 
-import ConsolePrintFormatter.ConsoleObjects.ConsoleObject;
+import ConsolePrintFormatter.Objects.ConsoleObject;
 import ConsolePrintFormatter.FilledTextBox.Helpers.BuildColorCSI;
 import ConsolePrintFormatter.FilledTextBox.Helpers.DecorateLines;
+import ConsolePrintFormatter.FilledTextBox.Helpers.ProcessTabulators;
 import ConsolePrintFormatter.Utils.LineTools.LineMerger;
 import ConsolePrintFormatter.Utils.LineTools.StringSplitter;
 import ConsolePrintFormatter.Utils.Normalize.NormalizeStringLines;
@@ -24,32 +25,38 @@ public class BuildFilledBox {
     LineMerger _mergeLines = new LineMerger();
     DecorateLines _fillColor = new DecorateLines();
     BuildColorCSI _buildCSI = new BuildColorCSI();
+    ProcessTabulators _processTabulators = new ProcessTabulators();
 
     public BuildFilledBox(String str){
         _str = str;
     }
 
-    public void setBackroundColor(Color color){
+    public BuildFilledBox setBackroundColor(Color color){
         _bgColor = color;
+        return this;
     }
 
-    public void setTextColor(Color color){
+    public BuildFilledBox setTextColor(Color color){
         _fgColor = color;
+        return this;
     }
 
-    public void setPadding(int horizontal, int vertical){
+    public BuildFilledBox setPadding(int horizontal, int vertical){
         _verticalPadding = vertical;
         _horizontalPadding = horizontal;
+        return this;
     }
 
-    public void setMargins(int horizontal, int vertical){
+    public BuildFilledBox setMargins(int horizontal, int vertical){
         _horizontalMargin = horizontal;
         _verticalMargin = vertical;
+        return this;
     }
 
     public ConsoleObject build(){
         var lines = _splitString.split(_str);
-        var normalizedLines = _normalize.normalize(lines);
+        var processed = _processTabulators.process(lines);
+        var normalizedLines = _normalize.normalize(processed);
         _surroundWithSpaces.create(normalizedLines, _verticalPadding, _horizontalPadding);
         var bgLines = _fillColor.fill(normalizedLines, _buildCSI.buildBg(_bgColor));
         var fgLines = _fillColor.fill(bgLines,_buildCSI.buildFg(_fgColor));

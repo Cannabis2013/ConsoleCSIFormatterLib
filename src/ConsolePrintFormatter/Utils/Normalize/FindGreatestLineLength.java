@@ -6,8 +6,8 @@ public final class FindGreatestLineLength {
     public int greatest(List<String> lines){
         if(lines.size() == 0)
             return 0;
-        var l = lines.stream().reduce((line, container) ->
-            container = line.length() > container.length() ? line : container).get();
+        var l = lines.stream().reduce("",(line, container) ->
+            container = line.length() > container.length() ? line : container);
         return l.length();
     }
 }

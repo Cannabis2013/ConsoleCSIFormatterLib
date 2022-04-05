@@ -41,8 +41,8 @@ public final class StringSplitter {
             else
                 hasNext = false;
         }
-        if(_lines.isEmpty())
-            _lines.add(str);
+        if(_lines.isEmpty() || !_str.isEmpty() )
+            _lines.add(_str);
         return _lines;
     }
 }

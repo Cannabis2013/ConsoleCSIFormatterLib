@@ -1,4 +1,4 @@
-package ConsolePrintFormatter.ConsoleObjects;
+package ConsolePrintFormatter.Objects;
 
 public class ConsoleObject {
     private final String _str;

@@ -1,6 +1,7 @@
 package ConsolePrintFormatter.FramedTextBox;
 
-import ConsolePrintFormatter.ConsoleObjects.ConsoleObject;
+import ConsolePrintFormatter.Objects.ConsoleObject;
+import ConsolePrintFormatter.FilledTextBox.Helpers.ProcessTabulators;
 import ConsolePrintFormatter.FramedTextBox.AddFrame.AddFrame;
 import ConsolePrintFormatter.Utils.LineTools.LineMerger;
 import ConsolePrintFormatter.Utils.LineTools.StringSplitter;
@@ -9,36 +10,40 @@ import ConsolePrintFormatter.Utils.Padding.CreatePadding;
 
 public class BuildFramedTextBox {
     private final String _str;
-    private int _verticalPadding = 0;
-    private int _horizontalPadding = 0;
+    private int _vPad = 0;
+    private int _hPad = 0;
     private int _verticalMargin = 0;
     private int _horizontalMargin = 0;
 
     StringSplitter _splitString = new StringSplitter();
     NormalizeStringLines _normalize = new NormalizeStringLines();
-    CreatePadding _surroundWithSpaces = new CreatePadding();
+    CreatePadding _createPaddings = new CreatePadding();
     AddFrame _addFrame = new AddFrame();
     LineMerger _mergeLines = new LineMerger();
+    ProcessTabulators _processTabulators = new ProcessTabulators();
 
     public BuildFramedTextBox(String str) {
         _str = str;
     }
 
-    public void setPadding(int horizontal, int vertical){
-        _verticalPadding = vertical;
-        _horizontalPadding = horizontal;
+    public BuildFramedTextBox setPadding(int horizontal, int vertical){
+        _vPad = vertical;
+        _hPad = horizontal;
+        return this;
     }
 
-    public void setMargins(int horizontal, int vertical){
+    public BuildFramedTextBox setMargins(int horizontal, int vertical){
         _horizontalMargin = horizontal;
         _verticalMargin = vertical;
+        return this;
     }
 
     public ConsoleObject build(){
         var lines = _splitString.split(_str);
-        var normalizedLines = _normalize.normalize(lines);
-        _surroundWithSpaces.create(normalizedLines, _verticalPadding, _horizontalPadding);
-        var merged = _mergeLines.merge(normalizedLines);
+        var processed = _processTabulators.process(lines);
+        var normalized = _normalize.normalize(processed);
+        var padded = _createPaddings.create(normalized, _vPad, _hPad);
+        var merged = _mergeLines.merge(padded);
         var result = _addFrame.add(merged);
         return new ConsoleObject(result);
     }
